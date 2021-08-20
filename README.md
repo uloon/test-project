@@ -37,4 +37,90 @@
     3.使用方式:
         打标识:<h1 ref="xxx">...</h1>
         获取:this.$refs.xxx
+        
+## 配置项props
+    功能：让组件接收外部传来的数据
+    (1)传递数据
+        <Div name="xxx">
+    (2)接收数据
+        // 1.简单声明接收
+            props:['name','age']
+
+        // 2.接收的同时对数据进行类型监测
+        /*props:{
+            name:String,
+            age:Number
+        }*/
+
+        // 3.接收的同时对数据进行类型监测+默认值的指定+限制必要性
+        /*props:{
+            name:{
+                type:String,
+                // 属性是否必要输入
+                required:true
+            },
+            age:{
+                type:Number,
+                // 默认值99
+                default:99
+            }
+        }*/
+
+    备注：props是只读的，Vue底层会检测对props的修改，如果进行了修改，就会发出警告，
+        若业务需求确实需要修改，那么需要复制props的内容到data中，然后去修改data的数据
+
+## mixin（混入）
+    功能：可以把多个组件共有的配置提取成一个混入对象
+    使用方式：
+        第一步定义混入，例如：
+            export const mixinA={
+                methods: {
+                    showName(){
+                        alert(this.name)
+                    }  
+                },
+            }
+        第二步使用混入，例如：
+            首先导入混入所在的js文件 import {mixinA} from './xxx';
+                1.全局混入：Vue.mixin(mixinA)
+                2.局部混入：mixin:[mixinA]
+
+## 插件
+    功能：用于增强Vue
+    本质：包含install方法的一个对象，install的第一个参数Vue，第二个以后的参数是插件使用者传递的数据
+    定义插件：
+        对象.install = function (Vue,options){
+            1.添加全局过滤器
+            Vue.filter()
+
+            2.添加全局指令
+            Vue.directive()
+
+            3.配置全局混入
+            Vue.mixin()
+            ......
+        }
+    使用插件：
+        Vue.use(插件名)
+
+## scoped样式
+    作用：让样式在局部生效，防止冲突
+    写法：<style scoped>
+
+## 总结todoList案例
+    1.组件化编码流程
+        (1)实现静态组件：抽取组件，使用组件实现静态页面效果，注意命名不要和html元素冲突
+        (2)展示动态数据
+            (2).1数据的类型、名称是什么
+            (2).2数据保存在哪个组件
+                a.若一个组件在用：保存在自身
+                b.若一些组件在用：保存在父组件上（状态提升）
+        (3)交互——绑定事件监听
+    2.props适用于：
+        (1)父组件==>子组件
+        (1)子组件==>父组件，要求父组件先给子组件一个函数
+    3.不推荐在子组件中修改props传来的值
+
+
+
 
