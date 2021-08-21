@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalStorage</title>
+</head>
+<body>
+    <button onclick="saveDate()">点我保存数据</button>
+    <button onclick="readDate()">点我读取数据</button>
+    <button onclick="deleteDate()">点我删除数据</button>
+    <button onclick="deleteAllDate()">点我删除所有数据</button>
+    <script>
+        let obj={
+            name:'张三',
+            age:'18'
+        };
+
+        function saveDate(){
+            localStorage.setItem('msg','hello');
+            localStorage.setItem('person',JSON.stringify(obj));
+        };
+
+        function readDate(){
+            console.log(localStorage.getItem('msg'));
+            console.log(JSON.parse(localStorage.getItem('person')));
+        };
+
+        function deleteDate(){
+            localStorage.removeItem('msg');
+        };
+
+        function deleteAllDate(){
+            localStorage.clear();
+        }
+
+
+    </script>
+</body>
+</html>

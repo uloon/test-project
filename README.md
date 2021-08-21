@@ -121,6 +121,20 @@
         (1)子组件==>父组件，要求父组件先给子组件一个函数
     3.不推荐在子组件中修改props传来的值
 
+## WebStorage
+    1.存储内容大小一般在5MB左右
+    2.浏览器端通过Window.sessionStorage和Window.localStorage属性来实现本地存储机制
+    3.相关API
+        1.xxxStorage.setItem('key','value');//把键值对添加到存储中，如果键名存在则更新对应的值
+        2.xxxStorage.getItem('key');//函数返回对应的值
+        3.xxxStorage.removeItem('key');//删除对应键名的存储
+        4.xxxStorage.clear()//清除所有存储
+    4.备注：
+        1.SessionStorage存储中的内容会随浏览器窗口关闭而消失
+        2.LocalStorage中存储的内容需要手动清除才会消失
+        3.如果xxxStorage.getItem('key')如果找不到对应的值，则返回null
+        4.JSON.parse(null)的结果依旧是null
 
+        
 
 
