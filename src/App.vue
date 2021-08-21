@@ -20,7 +20,11 @@ export default {
     },
     data(){
         return{
-            todos:JSON.parse(localStorage.getItem('todos'))||[]
+            todos:[
+                {id:'001',title:'吃饭',done:true},
+                {id:'002',title:'睡觉',done:false},
+                {id:'003',title:'学习',done:true},
+            ]
         }
     },
     methods:{
@@ -53,15 +57,6 @@ export default {
             this.todos=this.todos.filter((todoObj)=>{
                 return !todoObj.done
             })
-        }
-    },
-    watch:{
-        todos:{
-            immediate:true,
-            deep:true,
-            handler(value){
-                localStorage.setItem('todos',JSON.stringify(value));
-            }
         }
     }
 }
