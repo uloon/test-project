@@ -6,6 +6,7 @@
       <input 
         type="text" 
         @blur="handleBlur(todoObj,$event)"
+        @keyup.enter="handleBlur(todoObj,$event)"
         :value="todoObj.title" 
         v-show="todoObj.isEdit" 
         ref="inputTitle"
