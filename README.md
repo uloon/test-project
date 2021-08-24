@@ -190,3 +190,83 @@
 ## this.$nextTick(回调函数)
     作用： 在下一次DOM更新结束之后执行指定的回调
     使用场景：当数据改变后，要基于更新后的DOM进行某些操作
+
+## 动画与过渡
+    1.作用：在插入，更新或移除DOM元素时，在合适的时候给元素添加样式类名
+    2.写法：
+        1.使用动画
+            （1）准备好keyframes
+                @keyframes show {
+                    from{
+                        transform: translateX(-100px);
+                    }
+                    to{
+                        transform: translateX(0px);
+                    }
+                }
+            （2）使用transition标签包裹元素，并配置name属性
+                <transition name="hello1" appear>
+                    <h1 class="title" v-show="isShow">你好1</h1>
+                </transition>
+            （3）在style里实现动画效果
+                <!-- 若未配置name，则hello1替换为v -->
+                .hello1-enter-active{
+                    animation: show 0.5s linear;
+                }
+                .hello1-leave-active{
+                    animation: show 0.5s linear reverse;
+                }
+        2.使用过度效果
+            （1）使用transition标签包裹元素，并配置name属性
+            （2）在style中实现过度效果
+                /* 进入的起点 ，离开的终点*/
+                .v-enter,.v-leave-to{
+                    transform: translateX(-100%);
+                }
+                /* 进入过程，离开过程 */
+                .v-enter-active,.v-leave-active{
+                    transition: 0.5s linear;
+                }
+                /* 进入的终点 ，离开的起点 */
+                .v-enter-to,.v-leave{
+                    transform: translateX(0);
+                }
+        3.使用第三方库animate
+            （1）安装第三方库  
+                    npm install animate.css
+            （2）引入库
+                    import 'animate.css'
+            （3）在transition中配置 
+                    name="animate__animated animate__bounce"
+                    enter-active-class="想要的进入样式"
+                    leave-active-class="想要的离开样式"
+
+## vue脚手架配置代理
+    方法一：
+        在vue.config.js中添加如下配置文件：
+            devServer:{
+                proxy:'http://localhost:5000'
+            }
+        优点：配置简单，请求的资源直接发给前端(8080)
+        缺点：不能配置多个代理，不能灵活地控制请求是否走代理，只有请求了
+        工作方式：当请求了前端不存在的资源时，那么该请求会发给服务器
+    方法二：
+        在vue.config.js文件中添加如下配置文件
+            devServer:{
+                proxy:{
+                    '/get-student':{                            //匹配所有以'/get-student'开头的请求路径
+                        target:'http://localhost:5000',         //代理目标的基础路径
+                        pathRewrite:{'^/get-student':''},       //将路径中的get-student替换为空字符，防止路径错误
+                        ws:true,                                //用于支持websocket
+                        changeOrigin:true,                      //是否伪装
+                    },
+                    '/get-car':{
+                        target:'http://localhost:5001',
+                        pathRewrite:{'^/get-car':''},
+                        ws:true,//用于支持websocket
+                        changeOrigin:true,//是否伪装
+                    }
+                }
+            }
+        优点：可以配置多个代理，且可以灵活的控制请求是否走代理
+        缺点：配置略繁琐，请求资源时必须加前缀
