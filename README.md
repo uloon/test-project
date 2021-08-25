@@ -270,3 +270,50 @@
             }
         优点：可以配置多个代理，且可以灵活的控制请求是否走代理
         缺点：配置略繁琐，请求资源时必须加前缀
+
+##  插槽
+    1.作用：让父组件可以向子组件指定位置插入html结构，也是一种组件间通信方式，适用于父组件==>子组件
+    2.分类：默认插槽，具名插槽，作用域插槽
+    3.使用方式：
+        1.默认插槽
+            父组件中：
+                <Category title="美食" :listData="foods">
+                    <div>插入的html结构</div>
+                </Category>
+            子组件中：
+                <slot>
+                    插槽的默认结构，若父组件未使用插槽，则使用默认结构
+                </slot>
+        2.具名插槽：
+            父组件中：
+                <Category title="美食" :listData="foods">
+                    <img slot="body" src="./assets/烧烤.jpg">
+                    <a slot="footer" href="https://www.bilibili.com/v/food">点击发现更多美食</a>
+                </Category>
+            子组件中：
+                <slot name="body">默认结构</slot>
+                <slot name="footer">默认结构</slot>
+        3.作用域插槽：
+            1.理解：数据在组件本身，但根据数据生成的结构需要组件的使用者自己决定
+            2.具体编码：
+                父组件中：
+                    <Category title="游戏" >
+                    <!-- 父组件的template的scope属性接收子组件传来的数据，接收到的内容为一个对象 -->
+                        <template scope="listData">
+                        <!-- 生成的是ul列表 -->
+                            <ul>
+                                <li v-for="(item,index) in listData.games" :key="index">{{item}}</li>
+                            </ul>
+                        </template>
+                    </Category>
+                    <Category title="游戏" >
+                        <template scope="listData">
+                        <!-- 生成的是ol列表 -->
+                            <ol>
+                                <li v-for="(item,index) in listData.games" :key="index">{{item}}</li>
+                            </ol>
+                        </template>
+                    </Category>
+                子组件中：
+                    <!-- 把子组件中的数据传给父组件 -->
+                    <slot :games="games"></slot>
