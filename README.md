@@ -317,3 +317,135 @@
                 子组件中：
                     <!-- 把子组件中的数据传给父组件 -->
                     <slot :games="games"></slot>
+
+## Vuex
+    1.概念：
+        在Vue中实现集中式状态（数据）管理的一个Vue插件，对vue应用中多个组件的共享状态进行集中式的管理，也是一种组件间通信方式，适用于任意组件间
+    2.何时使用？
+        多个组件共享数据时
+    3.搭建Vue环境
+        (1).创建文件 src/store/index.js
+            // 引入Vue
+            import Vue from 'vue'
+            // 引入Vuex
+            import Vuex from 'vuex'
+            // 使用插件
+            Vue.use(Vuex)
+
+            // 准备actions——用于响应组件中的动作
+            const actions = {}
+            // 准备mutations——用于操作数据
+            const mutations = {}
+            // 准备state——用于存储数据
+            const state = {}
+
+            // 创建并暴露store
+            export default new Vuex.Store({
+                actions:actions,
+                mutations:mutations,
+                state:state
+            })
+        (2).在main.js中创建vm时传入store配置项
+            // 引入store
+            import store from './store/index'
+            // 创建vm实例
+            new Vue({
+                ...
+                store,
+                ...
+            )}
+    4.getters
+        (1)概念：当state中的数据需要经过加工后再使用时，用getter加工
+        (2)在store/index.js中追加getter配置
+            const getters = {
+                bigSum(state) {
+                    return state.sum * 10
+                }
+            }
+            export default new Vuex.Store({
+                ...
+                getters
+            })
+        (3)在组件中读取数据：$store.getters.bigSum
+    5.mapState和mapGetter
+        1.帮助映射state和getter中的数据为计算属性
+            computed:{
+                // 借助mapState生成计算属性（对象写法）
+                // ...mapState({sum:'sum',})
+
+                // 借助mapState生成计算属性（数组写法）
+                ...mapState(['sum']),
+
+                // 借助mapGetters生成计算属性（对象写法）
+                // ...mapGetters({bigSum:'bigSum',})
+
+                // 借助mapGetters生成计算属性（数组写法）
+                ...mapGetters(['bigSum'])
+                // {{$store.getters.bigSum}} ==> {{bigSum}}
+            },
+    6.mapActions和mapMutations
+        1.帮助生成与actions和mutations对话的方法，即生成$store.dispatch(xxx)和$store.commit(xxx)的方法
+            methods:{
+                // (对象写法) 借助mapActions生成对应的方法，方法中会调用dispatch去联系actions
+                // ...mapActions({生成的单击事件回调函数名:'actions中存在的函数名',incrementDelay:'incrementDelay'})
+
+                // (数组写法) 
+                ...mapActions(['incrementOdd','incrementDelay'])
+                
+                // (对象写法) 借助mapMutations生成对应的方法，方法中会调用commit去联系mutations
+                ...mapMutations({increment:'INCREMENT',decrement:'DECREMENT'})
+
+                // (数组写法)，注：单击事件回调函数也需改成大写
+                ...mapMutations(['INCREMENT','DECREMENT']) 
+            }
+    7.模块化加命名空间
+        1.目的：让代码更好维护，让数据分类更加明确
+        2.修改store.js
+            // 求和功能相关配置
+            const countOptions={
+                namespaced:true,
+                actions:{  },
+                mutations:{  },
+                getters:{ },
+                state:{},
+            }
+
+            // Student组件相关配置
+            const personOptions={
+                namespaced:true,
+                actions:{ },
+                mutations:{ },
+                getters:{},
+                state:{ },
+            }
+
+            // 创建并暴露store
+            export default new Vuex.Store({
+                modules:{
+                    countOptions,
+                    personOptions
+                }
+            })
+        3.开启命名空间后，组件中读取state数据：
+            方式一：自己直接读取
+                this.$store.state.xxx
+            方式二：借助mapState读取
+                ...mapState('countOptions',['xxx','xxx'])
+
+        4.开启命名空间后，组件中读取getters数据：
+            方式一：自己直接读取
+                this.$store.getters['countOptions/xxx']
+            方式二：借助mapState读取
+                ...mapGetters('countOptions',['xxx','xxx'])
+
+        5.开启命名空间后，组件中调用dispatch：
+            方式一：自己直接调用
+                this.$store.dispatch('countOptions/xxx',要传的数据)
+            方式二：借助mapState读取
+                ...mapActions('countOptions',['actions中存在的方法'])
+
+        3.开启命名空间后，组件中调用commit：
+            方式一：自己直接调用
+                this.$store.commit('countOptions/XXX',要传的数据)
+            方式二：借助mapState读取
+                ...mapMutations('countOptions',['mutations中存在的方法'])
